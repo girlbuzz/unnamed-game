@@ -1,9 +1,9 @@
 
-SERVER=src/server/server.o src/server/ndb.o
-CLIENT=src/client/client.o
+LIB=src/lib/lib.o
+SERVER=src/server/main.o src/server/server.o src/server/ndb.o
+CLIENT=src/client/main.o
 
-# -I. is for the config.h file
-CFLAGS += -Iinclude -I.
+CFLAGS += -Isrc/include
 
 .PHONY: all clean
 .SUFFIXES: .c .o
@@ -13,11 +13,11 @@ CFLAGS += -Iinclude -I.
 
 all: server client
 
-server: $(SERVER)
-	$(CC) $(LDFLAGS) -o $@ $(SERVER)
+server: $(SERVER) $(LIB)
+	$(CC) $(LDFLAGS) -o $@ $(SERVER) $(LIB)
 
 client: $(CLIENT)
-	$(CC) $(LDFLAGS) -o $@ $(CLIENT)
+	$(CC) $(LDFLAGS) -o $@ $(CLIENT) $(LIB)
 
 clean:
-	$(RM) $(SERVER) $(CLIENT) server client
+	$(RM) $(SERVER) $(CLIENT) $(LIB) server client
