@@ -1,6 +1,6 @@
 
 LIB=src/lib/lib.o
-SERVER=src/server/main.o src/server/server.o src/server/ndb.o
+SERVER=src/server/main.o src/server/server.o src/server/game.o
 CLIENT=src/client/main.o
 
 CFLAGS += -Isrc/include

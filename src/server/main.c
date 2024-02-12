@@ -1,5 +1,5 @@
 #define _XOPEN_SOURCE 500
-#include "ndb.h"
+#include "game.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -43,7 +43,7 @@ int main(void) {
 		return 1;
 	}
 
-	ret = ndb(fd);
+	ret = game(fd);
 
 	close(fd);
 

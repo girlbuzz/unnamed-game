@@ -12,7 +12,7 @@
 #endif
 
 #ifndef TICKS_PER_SEC
-#define TICKS_PER_SEC 60
+#define TICKS_PER_SEC 4
 #endif
 
 #endif /* __NDB_SERVER_CONFIG_H */
