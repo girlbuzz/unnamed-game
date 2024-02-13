@@ -16,123 +16,43 @@
 #include "game.h"
 #include "server.h"
 
-static void send_updates(struct server *srv, struct connection *client)
-{
-	const char *buf = "hello!\n";
-	send(client->fd, buf, strlen(buf), 0);
-}
-
-static void update_all_clients(struct server *srv)
-{
-	for (size_t i = 0; i < srv->clients_size; i++) {
-		struct connection *client = &srv->clients[i];
-
-		if (client->fd < 0)
-			continue;
-
-		send_updates(srv, client);
-	}
-}
-
-static int handle_request(int fd)
-{
-	return 0;
-}
-
-int game(int socket)
-{
-	int ready;
-	nfds_t nfds = 1, i;
-	nfds_t pfds_capacity = 8;
-	struct pollfd *pfds = NULL;
-	struct server srv;
+int game(int socket) {
 	unsigned int t = 0;
+	struct server srv;
 
-	pfds = calloc(pfds_capacity, sizeof(struct pollfd));
-
-	if (!pfds) {
-		fprintf(stderr, "error: failed to allocate memory for polling."
-				" Are you out of memory?\n"
-				" strerror(): %s\n", strerror(errno));
+	if (init_server(&srv, socket)) {
+		fprintf(stderr, "error: failed to initialize server: %s\n", strerror(errno));
 		return 1;
 	}
 
-	pfds[0].fd = socket;
-	pfds[0].events = POLLIN;
-
-	for (i = 1; i < pfds_capacity; i++) {
-		pfds[i].fd = -1;
-	}
-
 	for (;;) {
-		unsigned int ct = ms();
+		unsigned int now = ms();
+		int ready;
 
-		if (t >= tick()) {
-			update_all_clients(&srv);
+		if (t >= srv.tick) {
+timeout:
+			update_game_state(&srv);
+			send_game_state(&srv);
 			t = 0;
 		}
 
-		ready = poll(pfds, nfds, tick() - t);
-		t += ms() - ct;
+		ready = poll(srv.pollfds, srv.size + 1, srv.tick - t);
+		t += ms() - now;
 
-		if (pfds[0].revents & POLLIN) {
-			int connection = accept(pfds[0].fd, NULL, NULL);
-
-			if (connection < 0) {
-				fprintf(stderr,
-					"error: inbound connection failed:"
-					"%s\n", strerror(errno));
-				continue;
-			}
-
-			for (i = 1; i < nfds; i++) {
-				if (pfds[i].fd == -1) {
-					pfds[i].fd = connection;
-					pfds[i].events = POLLIN;
-					goto connection_done;
-				}
-			}
-
-			if (nfds == pfds_capacity) {
-				pfds_capacity = pfds_capacity * 3 / 2;
-				pfds = realloc(pfds,
-					pfds_capacity * sizeof(struct pollfd));
-
-				for (i = nfds + 1; i < pfds_capacity; i++) {
-					pfds[nfds].fd = -1;
-					pfds[nfds].events = 0;
-				}
-			}
-
-			pfds[nfds].fd = connection;
-			pfds[nfds].events = POLLIN;
-
-			nfds++;
+		if (ready < 0) {
+			fprintf(stderr, "error: poll() :%s\n", strerror(errno));
+			return 1;
 		}
 
-connection_done:
+		if (ready == 0)
+			goto timeout;
 
-		for (i = 1; i < nfds; i++) {
-			if (pfds[i].fd == -1 || pfds[i].revents == 0)
-				continue;
+		if (handle_inbound_connections(&srv))
+			fprintf(stderr, "warn: failed to handle connection: %s\n", strerror(errno));
 
-			if (pfds[i].revents & POLLERR
-					|| pfds[i].revents & POLLHUP) {
-				close(pfds[i].fd);
-				pfds[i].fd = -1;
-				continue;
-			}
-
-			if (pfds[i].revents & POLLIN) {
-				if (handle_request(pfds[i].fd)) {
-					close(pfds[i].fd);
-					pfds[i].fd = -1;
-				}
-			}
-		}
+		if (handle_client_inputs(&srv))
+			fprintf(stderr, "warn: failed to handle client inputs: %s\n", strerror(errno));
 	}
-
-	free(pfds);
 
 	return 0;
 }
