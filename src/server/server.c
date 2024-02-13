@@ -63,7 +63,7 @@ int handle_inbound_connections(struct server *srv) {
 		if (srv->size == srv->capacity) {
 			srv->capacity *= 2;
 			srv->clients = realloc(srv->clients, sizeof(struct client) * srv->capacity);
-			srv->pollfds = realloc(srv->clients, sizeof(struct pollfd) * (srv->capacity + 1));
+			srv->pollfds = realloc(srv->pollfds, sizeof(struct pollfd) * (srv->capacity + 1));
 		}
 
 		srv->pollfds[srv->size + 1].fd = conn;
