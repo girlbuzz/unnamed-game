@@ -1,32 +1,32 @@
 [
   {
     "directory": "/home/mins/Code/C/not-deathball",
-    "command": "clang -Isrc/include -c -o src/server/main.o src/server/main.c",
+    "command": "gcc -Isrc/include -c -o src/server/main.o src/server/main.c",
     "file": "src/server/main.c"
   },
   {
     "directory": "/home/mins/Code/C/not-deathball",
-    "command": "clang -Isrc/include -c -o src/server/server.o src/server/server.c",
+    "command": "gcc -Isrc/include -c -o src/server/server.o src/server/server.c",
     "file": "src/server/server.c"
   },
   {
     "directory": "/home/mins/Code/C/not-deathball",
-    "command": "clang -Isrc/include -c -o src/server/game.o src/server/game.c",
+    "command": "gcc -Isrc/include -c -o src/server/game.o src/server/game.c",
     "file": "src/server/game.c"
   },
   {
     "directory": "/home/mins/Code/C/not-deathball",
-    "command": "clang -Isrc/include -c -o src/lib/timing.o src/lib/timing.c",
+    "command": "gcc -Isrc/include -c -o src/lib/timing.o src/lib/timing.c",
     "file": "src/lib/timing.c"
   },
   {
     "directory": "/home/mins/Code/C/not-deathball",
-    "command": "clang -Isrc/include -c -o src/lib/binstream.o src/lib/binstream.c",
+    "command": "gcc -Isrc/include -c -o src/lib/binstream.o src/lib/binstream.c",
     "file": "src/lib/binstream.c"
   },
   {
     "directory": "/home/mins/Code/C/not-deathball",
-    "command": "clang -Isrc/include -c -o src/client/main.o src/client/main.c",
+    "command": "gcc -Isrc/include -c -o src/client/main.o src/client/main.c",
     "file": "src/client/main.c"
   }
 ]

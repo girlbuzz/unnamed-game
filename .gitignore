@@ -1,4 +1,4 @@
 *.o
 /server
 /client
-/compile_comands.json
+/compile_commands.json
