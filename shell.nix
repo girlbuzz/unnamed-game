@@ -6,5 +6,8 @@ in
       clang
       lldb
       clang-tools
+      jq
     ];
+
+    env.CC = "clang";
   }

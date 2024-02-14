@@ -20,12 +20,14 @@ int main(void) {
 	fd = socket(AF_INET, SOCK_STREAM, 0);
 
 	if (fd < 0) {
-		fprintf(stderr, "error: failed to create socket: %s\n", strerror(errno));
+		fprintf(stderr, "error: failed to create socket: %s\n",
+			strerror(errno));
 		return 1;
 	}
 
 	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))) {
-		fprintf(stderr, "error: failed to set socket options: %s\n", strerror(errno));
+		fprintf(stderr, "error: failed to set socket options: %s\n",
+			strerror(errno));
 		return 1;
 	}
 
@@ -34,12 +36,14 @@ int main(void) {
 	address.sin_port = htons(PORT);
 
 	if (bind(fd, (struct sockaddr*) &address, sizeof(address)) < 0) {
-		fprintf(stderr, "error: failed to bind socket (%d): %s\n", fd, strerror(errno));
+		fprintf(stderr, "error: failed to bind socket (%d): %s\n", fd,
+			strerror(errno));
 		return 1;
 	}
 
 	if (listen(fd, BACKLOG) < 0) {
-		fprintf(stderr, "error: failed to listen on socket (%d): %s\n", fd, strerror(errno));
+		fprintf(stderr, "error: failed to listen on socket (%d): %s\n",
+			fd, strerror(errno));
 		return 1;
 	}
 

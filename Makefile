@@ -1,5 +1,5 @@
 
-LIB=src/lib/timing.o
+LIB=src/lib/timing.o src/lib/binstream.o
 SERVER=src/server/main.o src/server/server.o src/server/game.o
 CLIENT=src/client/main.o
 
